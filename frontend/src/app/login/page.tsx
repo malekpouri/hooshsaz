@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/Input';
 import styles from './Login.module.css';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -23,7 +23,7 @@ export default function LoginPage() {
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       const data = await res.json();
@@ -35,7 +35,7 @@ export default function LoginPage() {
       login(data.token, {
         id: data.id,
         username: data.username,
-        email: data.email,
+        fullName: data.fullName,
         role: data.role,
       });
     } catch (err: any) {
@@ -55,14 +55,14 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.field}>
-            <label htmlFor="email">Email</label>
+            <label htmlFor="username">Username</label>
             <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="username"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
-              placeholder="Enter your email"
+              placeholder="Enter your username"
             />
           </div>
 
@@ -82,10 +82,6 @@ export default function LoginPage() {
             {loading ? 'Signing in...' : 'Sign In'}
           </Button>
         </form>
-
-        <p className={styles.footer}>
-          Don't have an account? <Link href="/register">Sign up</Link>
-        </p>
       </div>
     </div>
   );
