@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: hooshsaz_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hooshsaz
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - hooshsaz-network
+
+  backend:
+    build: ./backend
+    container_name: hooshsaz_backend
+    environment:
+      DATABASE_URL: postgres://user:password@postgres:5432/hooshsaz
+      PORT: 5000
+      JWT_SECRET: supersecretkey
+    ports:
+      - "5000:5000"
+    depends_on:
+      - postgres
+    networks:
+      - hooshsaz-network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./frontend
+    container_name: hooshsaz_frontend
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - hooshsaz-network
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+networks:
+  hooshsaz-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
