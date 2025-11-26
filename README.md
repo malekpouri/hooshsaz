@@ -54,6 +54,7 @@ hooshsaz/
 2.  **Access the Application**:
     - Frontend: [http://localhost:3000](http://localhost:3000)
     - Backend API: [http://localhost:5000](http://localhost:5000)
+    - API Documentation: [http://localhost:5000/api-docs](http://localhost:5000/api-docs)
     - Database: localhost:5432
 
 ### Local Development
