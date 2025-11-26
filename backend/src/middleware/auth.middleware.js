@@ -14,7 +14,7 @@ const protect = async (req, res, next) => {
 
       req.user = await prisma.user.findUnique({
         where: { id: decoded.id },
-        select: { id: true, username: true, email: true, role: true },
+        select: { id: true, username: true, fullName: true, role: true },
       });
 
       if (!req.user) {
