@@ -19,14 +19,20 @@ enum MessageRole {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  username  String   @unique
-  password  String
-  role      Role     @default(USER)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  chats     Chat[]
+  id          String   @id @default(uuid())
+  username    String   @unique
+  fullName    String?
+  password    String
+  role        Role     @default(USER)
+  isProtected Boolean  @default(false) // Prevents deletion of default admin
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  chats       Chat[]
+}
+
+model SystemConfig {
+  key   String @id
+  value String
 }
 
 model AIModel {

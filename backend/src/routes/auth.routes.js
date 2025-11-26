@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const {
-  registerUser,
   loginUser,
   getUserProfile,
+  changePassword,
 } = require('../controllers/auth.controller');
 const { protect } = require('../middleware/auth.middleware');
 
@@ -13,37 +13,6 @@ const { protect } = require('../middleware/auth.middleware');
  *   name: Auth
  *   description: Authentication management
  */
-
-/**
- * @swagger
- * /api/auth/register:
- *   post:
- *     summary: Register a new user
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - username
- *               - email
- *               - password
- *             properties:
- *               username:
- *                 type: string
- *               email:
- *                 type: string
- *               password:
- *                 type: string
- *     responses:
- *       201:
- *         description: User registered successfully
- *       400:
- *         description: User already exists
- */
-router.post('/register', registerUser);
 
 /**
  * @swagger
@@ -58,10 +27,10 @@ router.post('/register', registerUser);
  *           schema:
  *             type: object
  *             required:
- *               - email
+ *               - username
  *               - password
  *             properties:
- *               email:
+ *               username:
  *                 type: string
  *               password:
  *                 type: string
@@ -88,5 +57,35 @@ router.post('/login', loginUser);
  *         description: Not authorized
  */
 router.get('/profile', protect, getUserProfile);
+
+/**
+ * @swagger
+ * /api/auth/password:
+ *   put:
+ *     summary: Change user password
+ *     tags: [Auth]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *             properties:
+ *               currentPassword:
+ *                 type: string
+ *               newPassword:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Password updated successfully
+ *       400:
+ *         description: Invalid current password
+ */
+router.put('/password', protect, changePassword);
 
 module.exports = router;

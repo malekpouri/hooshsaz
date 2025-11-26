@@ -1,0 +1,188 @@
+const prisma = require('../utils/prisma');
+const bcrypt = require('bcryptjs');
+
+// @desc    Create a new user (Admin only)
+// @route   POST /api/admin/users
+// @access  Private/Admin
+const createUser = async (req, res) => {
+  const { username, fullName, password, role } = req.body;
+
+  try {
+    const userExists = await prisma.user.findUnique({
+      where: { username },
+    });
+
+    if (userExists) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await prisma.user.create({
+      data: {
+        username,
+        fullName,
+        password: hashedPassword,
+        role: role || 'USER',
+      },
+    });
+
+    res.status(201).json({
+      id: user.id,
+      username: user.username,
+      fullName: user.fullName,
+      role: user.role,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Get all users
+// @route   GET /api/admin/users
+// @access  Private/Admin
+const getUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        role: true,
+        createdAt: true,
+        isProtected: true,
+      },
+    });
+    res.json(users);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/admin/users/:id
+// @access  Private/Admin
+const deleteUser = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    if (user.isProtected) {
+      return res.status(400).json({ message: 'Cannot delete protected user' });
+    }
+
+    await prisma.user.delete({
+      where: { id: req.params.id },
+    });
+
+    res.json({ message: 'User removed' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Get all chat logs
+// @route   GET /api/admin/chats
+// @access  Private/Admin
+const getAllChats = async (req, res) => {
+  try {
+    const chats = await prisma.chat.findMany({
+      include: {
+        user: {
+          select: { username: true },
+        },
+        model: {
+          select: { name: true },
+        },
+        messages: {
+          take: 1,
+          orderBy: { createdAt: 'desc' },
+        },
+      },
+      orderBy: { updatedAt: 'desc' },
+    });
+    res.json(chats);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Get system config (Ollama URL)
+// @route   GET /api/admin/config
+// @access  Private/Admin
+const getSystemConfig = async (req, res) => {
+  try {
+    const config = await prisma.systemConfig.findMany();
+    const configMap = {};
+    config.forEach((item) => {
+      configMap[item.key] = item.value;
+    });
+    res.json(configMap);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Update system config
+// @route   PUT /api/admin/config
+// @access  Private/Admin
+const updateSystemConfig = async (req, res) => {
+  const { key, value } = req.body;
+  try {
+    await prisma.systemConfig.upsert({
+      where: { key },
+      update: { value },
+      create: { key, value },
+    });
+    res.json({ message: 'Config updated' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+// @desc    Test Ollama connection
+// @route   POST /api/admin/test-ollama
+// @access  Private/Admin
+const testOllamaConnection = async (req, res) => {
+  try {
+    const config = await prisma.systemConfig.findUnique({
+      where: { key: 'OLLAMA_URL' },
+    });
+
+    const ollamaUrl = config ? config.value : 'http://localhost:11434';
+    
+    // Simple fetch to Ollama version or tags endpoint
+    const response = await fetch(`${ollamaUrl}/api/tags`);
+    
+    if (response.ok) {
+      res.json({ status: 'success', message: 'Connected to Ollama successfully' });
+    } else {
+      res.status(500).json({ status: 'error', message: 'Failed to connect to Ollama' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+};
+
+module.exports = {
+  createUser,
+  getUsers,
+  deleteUser,
+  getAllChats,
+  getSystemConfig,
+  updateSystemConfig,
+  testOllamaConnection,
+};

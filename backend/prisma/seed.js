@@ -1,0 +1,68 @@
+const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcryptjs');
+
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
+
+async function seed() {
+  const adminUsername = 'admin';
+  const adminPassword = 'admin';
+
+  try {
+    // Check if admin exists
+    const existingAdmin = await prisma.user.findUnique({
+      where: { username: adminUsername },
+    });
+
+    if (!existingAdmin) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(adminPassword, salt);
+
+      await prisma.user.create({
+        data: {
+          username: adminUsername,
+          password: hashedPassword,
+          fullName: 'System Administrator',
+          role: 'ADMIN',
+          isProtected: true,
+        },
+      });
+      console.log('Default admin user created.');
+    }
+
+    // Set default Ollama URL if not set
+    const ollamaConfig = await prisma.systemConfig.findUnique({
+      where: { key: 'OLLAMA_URL' },
+    });
+
+    if (!ollamaConfig) {
+      await prisma.systemConfig.create({
+        data: {
+          key: 'OLLAMA_URL',
+          value: 'http://localhost:11434',
+        },
+      });
+      console.log('Default Ollama URL configured.');
+    }
+  } catch (error) {
+    console.error('Seeding error:', error);
+  }
+}
+
+module.exports = seed;
+
+if (require.main === module) {
+  seed()
+    .catch((e) => {
+      console.error(e);
+      process.exit(1);
+    })
+    .finally(async () => {
+      await prisma.$disconnect();
+    });
+}
