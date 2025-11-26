@@ -1,10 +1,13 @@
 import React from 'react';
-import { Plus, MessageSquare, Trash2, Search, Settings } from 'lucide-react';
+import Link from 'next/link';
+import { Plus, MessageSquare, Trash2, Search, Settings, LayoutDashboard, LogOut } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import styles from './ChatSidebar.module.css';
 
 export const ChatSidebar = () => {
+  const { user, logout } = useAuth();
   return (
     <aside className={styles.sidebar}>
       <div className={styles.header}>
@@ -41,9 +44,17 @@ export const ChatSidebar = () => {
       </div>
 
       <div className={styles.footer}>
-        <Button variant="ghost" className="w-full justify-start gap-2">
-          <Settings size={16} />
-          Settings
+        {user?.role === 'ADMIN' && (
+          <Link href="/admin/users" className="w-full">
+            <Button variant="ghost" className="w-full justify-start gap-2 mb-2">
+              <LayoutDashboard size={16} />
+              Admin Panel
+            </Button>
+          </Link>
+        )}
+        <Button variant="ghost" className="w-full justify-start gap-2" onClick={logout}>
+          <LogOut size={16} />
+          Logout
         </Button>
       </div>
     </aside>

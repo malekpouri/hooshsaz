@@ -1,0 +1,10 @@
+.container {
+  max-width: 800px;
+}
+
+.card {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+}

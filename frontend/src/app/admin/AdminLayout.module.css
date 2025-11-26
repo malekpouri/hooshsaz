@@ -1,0 +1,103 @@
+.container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--background);
+}
+
+.sidebar {
+  width: 260px;
+  background-color: var(--sidebar-background);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  color: var(--foreground);
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.125rem;
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  color: var(--sidebar-foreground);
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.navItem:hover {
+  background-color: var(--secondary);
+  color: var(--foreground);
+}
+
+.active {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+}
+
+.active:hover {
+  background-color: var(--primary);
+  opacity: 0.9;
+}
+
+.footer {
+  border-top: 1px solid var(--sidebar-border);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  border-radius: var(--radius);
+  font-weight: 500;
+}
+
+.logoutBtn:hover {
+  background-color: #fee2e2;
+}
+
+.backLink {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--sidebar-foreground);
+  padding: 0.5rem;
+}
+
+.backLink:hover {
+  text-decoration: underline;
+}
+
+.main {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
