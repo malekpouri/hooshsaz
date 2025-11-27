@@ -10,9 +10,9 @@ async function main() {
     await prisma.$connect();
     console.log('Connected to Database');
 
-    // Bootstrap (Seed)
-    const seed = require('../prisma/seed');
-    await seed();
+    // Bootstrap (Auto-Seed)
+    const bootstrap = require('./utils/bootstrap');
+    await bootstrap();
     
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
