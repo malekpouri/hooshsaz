@@ -143,28 +143,40 @@ export default function ChatsPage() {
 
       {/* Chat Details Modal */}
       {selectedChat && (
-        <div className={styles.modalOverlay}>
-          <div className={`${styles.modal} max-w-2xl h-[80vh] flex flex-col`}>
-            <div className="flex justify-between items-center mb-4 pb-2 border-b">
-              <h2 className="text-xl font-bold truncate pr-4">{selectedChat.title}</h2>
-              <button onClick={closeChatModal} className="text-gray-500 hover:text-gray-700">
-                <X size={24} />
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-background w-full max-w-3xl max-h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden">
+            <div className="flex justify-between items-center p-4 border-b">
+              <div>
+                <h2 className="text-lg font-bold truncate">{selectedChat.title}</h2>
+                <p className="text-sm text-muted-foreground">
+                  {selectedChat.user.username} • {selectedChat.model?.name} • {new Date(selectedChat.createdAt).toLocaleString()}
+                </p>
+              </div>
+              <button 
+                onClick={closeChatModal} 
+                className="p-2 hover:bg-accent rounded-full transition-colors"
+              >
+                <X size={20} />
               </button>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-2 space-y-4 bg-gray-50 dark:bg-gray-900 rounded-md">
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-muted/30">
               {!chatDetails ? (
-                <div className="text-center py-10">Loading messages...</div>
+                <div className="flex justify-center items-center h-full">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
               ) : (
                 chatDetails.messages.map((msg: any) => (
                   <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[80%] p-3 rounded-lg ${
+                    <div className={`max-w-[85%] p-4 rounded-2xl shadow-sm ${
                       msg.role === 'user' 
-                        ? 'bg-blue-500 text-white' 
-                        : 'bg-white dark:bg-gray-800 border dark:border-gray-700'
+                        ? 'bg-blue-600 text-white rounded-br-none' 
+                        : 'bg-white dark:bg-gray-800 border dark:border-gray-700 text-foreground rounded-bl-none'
                     }`}>
-                      <p className="text-xs opacity-70 mb-1">{msg.role === 'user' ? 'User' : 'AI'}</p>
-                      <p className="whitespace-pre-wrap text-sm">{msg.content}</p>
+                      <p className="text-xs opacity-70 mb-1 font-semibold uppercase tracking-wider">
+                        {msg.role === 'user' ? 'User' : 'AI'}
+                      </p>
+                      <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</p>
                     </div>
                   </div>
                 ))
