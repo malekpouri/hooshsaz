@@ -16,9 +16,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   const navItems = [
-    { href: '/admin/users', label: 'Users', icon: Users },
-    { href: '/admin/chats', label: 'Chat Logs', icon: MessageSquare },
-    { href: '/admin/settings', label: 'Settings', icon: Settings },
+    { href: '/admin/users', label: 'کاربران', icon: Users },
+    { href: '/admin/chats', label: 'چت ها', icon: MessageSquare },
+    { href: '/admin/settings', label: 'تنظیمات', icon: Settings },
   ];
 
   return (
@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <aside className={styles.sidebar}>
         <div className={styles.header}>
           <LayoutDashboard size={24} />
-          <span className={styles.brand}>Admin Panel</span>
+          <span className={styles.brand}>پنل مدیریت</span>
         </div>
         
         <nav className={styles.nav}>
@@ -49,10 +49,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className={styles.footer}>
           <button onClick={logout} className={styles.logoutBtn}>
             <LogOut size={20} />
-            <span>Logout</span>
+            <span>خروج</span>
           </button>
           <Link href="/" className={styles.backLink}>
-            Back to Chat
+            بازگشت به چت
           </Link>
         </div>
       </aside>

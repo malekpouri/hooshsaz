@@ -27,12 +27,12 @@ async function seed() {
         data: {
           username: adminUsername,
           password: hashedPassword,
-          fullName: 'System Administrator',
+          fullName: 'مدیر سیستم',
           role: 'ADMIN',
           isProtected: true,
         },
       });
-      console.log('Default admin user created.');
+      console.log('کاربر ادیمین پیشفرض ایجاد شد.');
     }
 
     // Set default Ollama URL if not set

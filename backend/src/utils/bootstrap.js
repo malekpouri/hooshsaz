@@ -22,13 +22,13 @@ const bootstrap = async () => {
           username: adminUsername,
           password: hashedPassword,
           role: 'ADMIN',
-          fullName: 'System Administrator',
+          fullName: 'مدیر سیستم',
           isProtected: true, // Prevent deletion
         },
       });
-      console.log(`Created admin user: ${adminUsername}`);
+      console.log(`کاربر ادیمین پیشفرض ایجاد شد: ${adminUsername}`);
     } else {
-      console.log('Admin user already exists.');
+      console.log('کاربر ادیمین پیشفرض وجود دارد.');
     }
 
     // 2. Create Default System Config
@@ -46,7 +46,7 @@ const bootstrap = async () => {
         },
       });
     }
-    console.log('System configuration checked/seeded.');
+    console.log('تنظیمات سیستم بررسی شده.');
 
   } catch (error) {
     console.error('Bootstrap error:', error);

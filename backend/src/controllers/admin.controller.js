@@ -40,6 +40,52 @@ const createUser = async (req, res) => {
   }
 };
 
+// @desc    Update user
+// @route   PUT /api/admin/users/:id
+// @access  Private/Admin
+const updateUser = async (req, res) => {
+  const { username, fullName, role, password } = req.body;
+  
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.params.id },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: 'کاربری یافت نشد' });
+    }
+
+    const updateData = {
+      username,
+      fullName,
+      role,
+    };
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: req.params.id },
+      data: updateData,
+      select: {
+        id: true,
+        username: true,
+        fullName: true,
+        role: true,
+        createdAt: true,
+        isProtected: true,
+      },
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'خطای سرور' });
+  }
+};
+
 // @desc    Get all users
 // @route   GET /api/admin/users
 // @access  Private/Admin
@@ -72,21 +118,21 @@ const deleteUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: 'کاربری یافت نشد' });
     }
 
     if (user.isProtected) {
-      return res.status(400).json({ message: 'Cannot delete protected user' });
+      return res.status(400).json({ message: 'کاربر محافظت شده است' });
     }
 
     await prisma.user.delete({
       where: { id: req.params.id },
     });
 
-    res.json({ message: 'User removed' });
+    res.json({ message: 'کاربر حذف شد' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'خطای سرور' });
   }
 };
 
@@ -131,7 +177,7 @@ const getAllChats = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'خطای سرور' });
   }
 };
 
@@ -163,10 +209,10 @@ const updateSystemConfig = async (req, res) => {
       update: { value },
       create: { key, value },
     });
-    res.json({ message: 'Config updated' });
+    res.json({ message: 'تغییرات با موفقیت ذخیره شد' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: 'خطای سرور' });
   }
 };
 
@@ -185,9 +231,9 @@ const testOllamaConnection = async (req, res) => {
     const response = await fetch(`${ollamaUrl}/api/tags`);
     
     if (response.ok) {
-      res.json({ status: 'success', message: 'Connected to Ollama successfully' });
+      res.json({ status: 'success', message: 'اتصال با Ollama با موفقیت برقرار شد' });
     } else {
-      res.status(500).json({ status: 'error', message: 'Failed to connect to Ollama' });
+      res.status(500).json({ status: 'error', message: 'اتصال با Ollama با موفقیت برقرار نشد' });
     }
   } catch (error) {
     console.error(error);
@@ -197,6 +243,7 @@ const testOllamaConnection = async (req, res) => {
 
 module.exports = {
   createUser,
+  updateUser,
   getUsers,
   deleteUser,
   getAllChats,

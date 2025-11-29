@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   createUser,
+  updateUser,
   getUsers,
   deleteUser,
   getAllChats,
@@ -79,8 +80,38 @@ router.route('/users').get(getUsers).post(createUser);
  *     responses:
  *       200:
  *         description: User deleted
+ *   put:
+ *     summary: Update a user
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               fullName:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [USER, ADMIN]
+ *     responses:
+ *       200:
+ *         description: User updated
  */
-router.route('/users/:id').delete(deleteUser);
+router.route('/users/:id').delete(deleteUser).put(updateUser);
 
 /**
  * @swagger

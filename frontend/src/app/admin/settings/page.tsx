@@ -75,14 +75,14 @@ export default function SettingsPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className="text-2xl font-bold mb-6">System Settings</h1>
+      <h1 className="text-2xl font-bold mb-6">تنظیمات سیستم</h1>
 
       <div className={styles.card}>
-        <h2 className="text-lg font-semibold mb-4">Ollama Configuration</h2>
+        <h2 className="text-lg font-semibold mb-4">تنظیمات Ollama</h2>
         
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">Ollama API URL</label>
+            <label className="text-sm font-medium">آدرس API Ollama</label>
             <div className="flex gap-2">
               <Input 
                 value={config['OLLAMA_URL'] || ''}
@@ -90,16 +90,16 @@ export default function SettingsPage() {
                 placeholder="http://localhost:11434"
               />
               <Button onClick={() => handleUpdate('OLLAMA_URL', config['OLLAMA_URL'])}>
-                Save
+                ذخیره
               </Button>
             </div>
           </div>
 
           <div className="border-t pt-4 mt-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium">Connection Status</span>
+              <span className="text-sm font-medium">وضعیت اتصال</span>
               <Button variant="outline" onClick={handleTestConnection} className="gap-2">
-                <RefreshCw size={16} /> Test Connection
+                <RefreshCw size={16} /> بررسی اتصال
               </Button>
             </div>
             
