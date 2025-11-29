@@ -110,40 +110,49 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
 
       let assistantMessage = '';
       let isFirstChunk = true;
+      let buffer = '';
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = new TextDecoder().decode(value);
-        const lines = chunk.split('\n\n');
+        const chunk = new TextDecoder().decode(value, { stream: true });
+        buffer += chunk;
+        
+        const lines = buffer.split('\n\n');
+        // Keep the last part in the buffer as it might be incomplete
+        buffer = lines.pop() || '';
 
         for (const line of lines) {
           if (line.startsWith('data: ')) {
-            const data = JSON.parse(line.slice(6));
+            try {
+              const data = JSON.parse(line.slice(6));
 
-            if (data.type === 'info' && data.chatId && !chatId) {
-              onChatCreated(data.chatId);
-            } else if (data.type === 'chunk') {
-              assistantMessage += data.content;
-              
-              setMessages(prev => {
-                const newMessages = [...prev];
-                if (isFirstChunk) {
-                  newMessages.push({
-                    id: 'assistant-' + Date.now(),
-                    role: 'assistant',
-                    content: assistantMessage
-                  });
-                  isFirstChunk = false;
-                } else {
-                  const lastMsg = newMessages[newMessages.length - 1];
-                  if (lastMsg.role === 'assistant') {
-                    lastMsg.content = assistantMessage;
+              if (data.type === 'info' && data.chatId && !chatId) {
+                onChatCreated(data.chatId);
+              } else if (data.type === 'chunk') {
+                assistantMessage += data.content;
+                
+                setMessages(prev => {
+                  const newMessages = [...prev];
+                  if (isFirstChunk) {
+                    newMessages.push({
+                      id: 'assistant-' + Date.now(),
+                      role: 'assistant',
+                      content: assistantMessage
+                    });
+                    isFirstChunk = false;
+                  } else {
+                    const lastMsg = newMessages[newMessages.length - 1];
+                    if (lastMsg.role === 'assistant') {
+                      lastMsg.content = assistantMessage;
+                    }
                   }
-                }
-                return newMessages;
-              });
+                  return newMessages;
+                });
+              }
+            } catch (e) {
+              console.error('Error parsing stream data:', e);
             }
           }
         }
