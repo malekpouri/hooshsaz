@@ -98,9 +98,9 @@ export default function UsersPage() {
   return (
     <div className={styles.container}>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">User Management</h1>
+        <h1 className="text-2xl font-bold">مدیریت کاربران</h1>
         <Button onClick={() => setShowAddModal(true)} className="gap-2">
-          <Plus size={16} /> Add User
+          <Plus size={16} /> افزودن کاربر
         </Button>
       </div>
 
@@ -108,11 +108,11 @@ export default function UsersPage() {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>Username</th>
-              <th>Full Name</th>
-              <th>Role</th>
-              <th>Created At</th>
-              <th>Actions</th>
+              <th>نام کاربری</th>
+              <th>نام کامل</th>
+              <th>نقش</th>
+              <th>تاریخ ایجاد</th>
+              <th>عملیات</th>
             </tr>
           </thead>
           <tbody>
@@ -125,7 +125,7 @@ export default function UsersPage() {
                     {user.role}
                   </span>
                 </td>
-                <td>{new Date(user.createdAt).toLocaleDateString()}</td>
+                <td>{new Date(user.createdAt).toLocaleDateString('fa-IR')}</td>
                 <td>
                   {user.isProtected ? (
                     <Shield size={18} className="text-gray-400" />
@@ -147,10 +147,10 @@ export default function UsersPage() {
       {showAddModal && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
-            <h2 className="text-xl font-bold mb-4">Add New User</h2>
+            <h2 className="text-xl font-bold mb-4">افزودن کاربر جدید</h2>
             <form onSubmit={handleCreateUser} className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
-                <label>Username</label>
+                <label>نام کاربری</label>
                 <Input 
                   value={newUser.username}
                   onChange={e => setNewUser({...newUser, username: e.target.value})}
@@ -158,14 +158,14 @@ export default function UsersPage() {
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label>Full Name</label>
+                <label>نام کامل</label>
                 <Input 
                   value={newUser.fullName}
                   onChange={e => setNewUser({...newUser, fullName: e.target.value})}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label>Password</label>
+                <label>رمز عبور</label>
                 <Input 
                   type="password"
                   value={newUser.password}
@@ -174,19 +174,19 @@ export default function UsersPage() {
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label>Role</label>
+                <label>نقش</label>
                 <select 
                   className={styles.select}
                   value={newUser.role}
                   onChange={e => setNewUser({...newUser, role: e.target.value})}
                 >
-                  <option value="USER">User</option>
-                  <option value="ADMIN">Admin</option>
+                  <option value="USER">کاربر</option>
+                  <option value="ADMIN">مدیر</option>
                 </select>
               </div>
               <div className="flex justify-end gap-2 mt-4">
-                <Button type="button" variant="ghost" onClick={() => setShowAddModal(false)}>Cancel</Button>
-                <Button type="submit">Create User</Button>
+                <Button type="button" variant="ghost" onClick={() => setShowAddModal(false)}>انصراف</Button>
+                <Button type="submit">ایجاد کاربر</Button>
               </div>
             </form>
           </div>

@@ -75,38 +75,38 @@ export default function ChatsPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className="text-2xl font-bold mb-6">Chat Logs</h1>
+      <h1 className="text-2xl font-bold mb-6">تاریخچه گفتگوها</h1>
 
       <div className={styles.tableContainer}>
         <table className={styles.table}>
           <thead>
             <tr>
-              <th>User</th>
-              <th>Title</th>
-              <th>Model</th>
-              <th>Date</th>
-              <th>Actions</th>
+              <th>کاربر</th>
+              <th>عنوان</th>
+              <th>مدل</th>
+              <th>تاریخ</th>
+              <th>عملیات</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-               <tr><td colSpan={5} className="text-center py-4">Loading...</td></tr>
+               <tr><td colSpan={5} className="text-center py-4">در حال بارگذاری...</td></tr>
             ) : chats.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center py-4">No chats found</td>
+                <td colSpan={5} className="text-center py-4">هیچ گفتگویی یافت نشد</td>
               </tr>
             ) : (
               chats.map((chat) => (
                 <tr key={chat.id}>
                   <td>{chat.user.username}</td>
-                  <td>{chat.title || 'Untitled'}</td>
-                  <td>{chat.model?.name || 'N/A'}</td>
-                  <td>{new Date(chat.createdAt).toLocaleString()}</td>
+                  <td>{chat.title || 'بدون عنوان'}</td>
+                  <td>{chat.model?.name || 'نامشخص'}</td>
+                  <td>{new Date(chat.createdAt).toLocaleDateString('fa-IR')}</td>
                   <td>
                     <button 
                       onClick={() => handleViewChat(chat)}
                       className="text-blue-500 hover:text-blue-700"
-                      title="View Chat"
+                      title="مشاهده گفتگو"
                     >
                       <Eye size={18} />
                     </button>
@@ -126,17 +126,17 @@ export default function ChatsPage() {
             disabled={page === 1} 
             onClick={() => setPage(p => Math.max(1, p - 1))}
           >
-            Previous
+            قبلی
           </Button>
           <span className="flex items-center px-4 text-sm">
-            Page {pagination.page} of {pagination.pages}
+            صفحه {pagination.page} از {pagination.pages}
           </span>
           <Button 
             variant="outline" 
             disabled={page === pagination.pages} 
             onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
           >
-            Next
+            بعدی
           </Button>
         </div>
       )}
@@ -149,7 +149,7 @@ export default function ChatsPage() {
               <div>
                 <h2 className="text-lg font-bold truncate">{selectedChat.title}</h2>
                 <p className="text-sm text-muted-foreground">
-                  {selectedChat.user.username} • {selectedChat.model?.name} • {new Date(selectedChat.createdAt).toLocaleString()}
+                  {selectedChat.user.username} • {selectedChat.model?.name} • {new Date(selectedChat.createdAt).toLocaleDateString('fa-IR')}
                 </p>
               </div>
               <button 
@@ -174,7 +174,7 @@ export default function ChatsPage() {
                         : 'bg-white dark:bg-gray-800 border dark:border-gray-700 text-foreground rounded-bl-none'
                     }`}>
                       <p className="text-xs opacity-70 mb-1 font-semibold uppercase tracking-wider">
-                        {msg.role === 'user' ? 'User' : 'AI'}
+                        {msg.role === 'user' ? 'کاربر' : 'هوش مصنوعی'}
                       </p>
                       <p className="whitespace-pre-wrap text-sm leading-relaxed">{msg.content}</p>
                     </div>

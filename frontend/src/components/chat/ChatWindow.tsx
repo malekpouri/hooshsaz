@@ -217,12 +217,12 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
               <Sparkles size={64} className="text-primary" />
             </div>
             <div className="text-center space-y-2">
-              <h2 className="text-3xl font-bold text-foreground">Welcome to HooshSaz</h2>
-              <p className="text-muted-foreground text-lg">Choose an AI model to begin your journey</p>
+              <h2 className="text-3xl font-bold text-foreground">به هوش‌ساز خوش آمدید</h2>
+              <p className="text-muted-foreground text-lg">برای شروع، یک مدل هوش مصنوعی انتخاب کنید</p>
             </div>
             
             <div className="w-80 relative">
-              <label className="block text-sm font-medium mb-3 text-foreground/80">Select AI Model</label>
+              <label className="block text-sm font-medium mb-3 text-foreground/80">انتخاب مدل</label>
               <select 
                 className={styles.select}
                 value={selectedModel}
@@ -251,13 +251,13 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
                 <div className={styles.messageContent}>
                   <div className="flex justify-between items-start">
                     <p className={styles.sender}>
-                      {msg.role === 'assistant' ? 'HooshSaz AI' : 'You'}
+                      {msg.role === 'assistant' ? 'هوش ساز' : 'شما'}
                     </p>
                     {msg.role === 'assistant' && (
                       <button 
                         onClick={() => handleCopy(msg.content, msg.id)}
                         className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                        title="Copy response"
+                        title="کپی پاسخ"
                       >
                         {copiedId === msg.id ? <Check size={14} /> : <Copy size={14} />}
                       </button>
@@ -280,7 +280,7 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
         <div className={styles.inputContainer}>
           <textarea
             className={styles.textarea}
-            placeholder="Type a message..."
+            placeholder="یک پیام بنویسید..."
             rows={1}
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -293,11 +293,11 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
             disabled={isLoading}
           />
           <Button size="icon" variant="primary" onClick={handleSend} disabled={isLoading}>
-            <Send size={18} />
+            <Send size={18} className="rotate-180" />
           </Button>
         </div>
         <p className={styles.disclaimer}>
-          HooshSaz can make mistakes. Consider checking important information.
+          هوش‌ساز ممکن است اشتباه کند. لطفاً اطلاعات مهم را بررسی کنید.
         </p>
       </div>
     </main>

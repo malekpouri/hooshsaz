@@ -75,13 +75,13 @@ export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: Cha
           onClick={() => onSelectChat(null)}
         >
           <Plus size={16} />
-          New Chat
+          گفتگوی جدید
         </Button>
       </div>
       
       <div className={styles.search}>
         <Input 
-          placeholder="Search chats..." 
+          placeholder="جستجو در گفتگوها..." 
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
@@ -89,9 +89,9 @@ export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: Cha
 
       <div className={styles.history}>
         <div className={styles.group}>
-          <h3 className={styles.groupTitle}>History</h3>
+          <h3 className={styles.groupTitle}>تاریخچه</h3>
           {filteredChats.length === 0 ? (
-            <p className="text-xs text-gray-500 px-2">No chats found</p>
+            <p className="text-xs text-gray-500 px-2">هیچ گفتگویی یافت نشد</p>
           ) : (
             filteredChats.map(chat => (
               <div 
@@ -102,7 +102,7 @@ export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: Cha
                 <MessageSquare size={16} className="shrink-0" />
                 <span className={styles.chatTitle}>{chat.title}</span>
                 <button 
-                  className="ml-auto p-1 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="mr-auto p-1 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                   onClick={(e) => handleDeleteChat(e, chat.id)}
                 >
                   <Trash2 size={14} />
@@ -116,20 +116,20 @@ export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: Cha
       <div className={styles.footer}>
         <Button variant="ghost" className="w-full justify-start gap-2 mb-2" onClick={toggleTheme}>
           {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
-          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+          {theme === 'light' ? 'حالت شب' : 'حالت روز'}
         </Button>
 
         {user?.role === 'ADMIN' && (
           <Link href="/admin/users" className="w-full">
             <Button variant="ghost" className="w-full justify-start gap-2 mb-2">
               <LayoutDashboard size={16} />
-              Admin Panel
+              پنل مدیریت
             </Button>
           </Link>
         )}
         <Button variant="ghost" className="w-full justify-start gap-2" onClick={logout}>
           <LogOut size={16} />
-          Logout
+          خروج
         </Button>
       </div>
     </aside>
