@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Send, Bot, User, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '../ui/Button';
@@ -198,8 +200,10 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
                   <p className={styles.sender}>
                     {msg.role === 'assistant' ? 'HooshSaz AI' : 'You'}
                   </p>
-                  <div className={styles.bubble} style={{ whiteSpace: 'pre-wrap' }}>
-                    {msg.content}
+                  <div className={`${styles.bubble} ${styles.markdown}`}>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.content}
+                    </ReactMarkdown>
                   </div>
                 </div>
               </div>

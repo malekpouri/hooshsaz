@@ -14,21 +14,19 @@
   --sidebar-border: #e5e7eb;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --primary: #3b82f6;
-    --primary-foreground: #ffffff;
-    --secondary: #1f2937;
-    --secondary-foreground: #f3f4f6;
-    --border: #374151;
-    --input: #374151;
-    --ring: #3b82f6;
-    --sidebar-background: #111827;
-    --sidebar-foreground: #d1d5db;
-    --sidebar-border: #374151;
-  }
+[data-theme='dark'] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
+  --secondary: #1f2937;
+  --secondary-foreground: #f3f4f6;
+  --border: #374151;
+  --input: #374151;
+  --ring: #3b82f6;
+  --sidebar-background: #111827;
+  --sidebar-foreground: #d1d5db;
+  --sidebar-border: #374151;
 }
 
 * {

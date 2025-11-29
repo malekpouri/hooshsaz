@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: "Multi-user AI Chat Platform",
 };
 
+import { ThemeProvider } from '@/context/ThemeContext';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -26,7 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <AuthProvider>{children}</AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

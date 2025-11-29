@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Plus, MessageSquare, Trash2, Search, LayoutDashboard, LogOut } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, Search, LayoutDashboard, LogOut, Sun, Moon } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useTheme } from '@/context/ThemeContext';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import styles from './ChatSidebar.module.css';
@@ -20,6 +21,7 @@ interface ChatSidebarProps {
 
 export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: ChatSidebarProps) => {
   const { user, token, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [chats, setChats] = useState<Chat[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -112,6 +114,11 @@ export const ChatSidebar = ({ currentChatId, onSelectChat, refreshTrigger }: Cha
       </div>
 
       <div className={styles.footer}>
+        <Button variant="ghost" className="w-full justify-start gap-2 mb-2" onClick={toggleTheme}>
+          {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+          {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+        </Button>
+
         {user?.role === 'ADMIN' && (
           <Link href="/admin/users" className="w-full">
             <Button variant="ghost" className="w-full justify-start gap-2 mb-2">
