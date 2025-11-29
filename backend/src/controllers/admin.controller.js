@@ -94,23 +94,41 @@ const deleteUser = async (req, res) => {
 // @route   GET /api/admin/chats
 // @access  Private/Admin
 const getAllChats = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const skip = (page - 1) * limit;
+
   try {
-    const chats = await prisma.chat.findMany({
-      include: {
-        user: {
-          select: { username: true },
+    const [chats, total] = await Promise.all([
+      prisma.chat.findMany({
+        skip,
+        take: limit,
+        include: {
+          user: {
+            select: { username: true },
+          },
+          model: {
+            select: { name: true },
+          },
+          messages: {
+            take: 1,
+            orderBy: { createdAt: 'desc' },
+          },
         },
-        model: {
-          select: { name: true },
-        },
-        messages: {
-          take: 1,
-          orderBy: { createdAt: 'desc' },
-        },
+        orderBy: { updatedAt: 'desc' },
+      }),
+      prisma.chat.count(),
+    ]);
+
+    res.json({
+      chats,
+      pagination: {
+        page,
+        limit,
+        total,
+        pages: Math.ceil(total / limit),
       },
-      orderBy: { updatedAt: 'desc' },
     });
-    res.json(chats);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error' });

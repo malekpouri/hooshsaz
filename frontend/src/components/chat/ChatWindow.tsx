@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Send, Bot, User, Sparkles } from 'lucide-react';
+import { Send, Bot, User, Sparkles, Copy, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '../ui/Button';
 import styles from './ChatWindow.module.css';
@@ -26,8 +26,9 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [models, setModels] = useState<any[]>([]);
   const [selectedModel, setSelectedModel] = useState<string>('');
-  const [isModelMenuOpen, setIsModelMenuOpen] = useState(false);
   
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const activeChatIdRef = useRef<string | null>(chatId);
 
@@ -81,6 +82,12 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleCopy = async (content: string, id: string) => {
+    await navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -216,51 +223,17 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
             
             <div className="w-80 relative">
               <label className="block text-sm font-medium mb-3 text-foreground/80">Select AI Model</label>
-              
-              <div className="relative">
-                <button 
-                  className="w-full p-4 text-left rounded-xl border bg-card hover:bg-accent/50 transition-all duration-200 flex items-center justify-between group shadow-sm hover:shadow-md"
-                  onClick={() => setIsModelMenuOpen(!isModelMenuOpen)}
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
-                      <Bot size={24} />
-                    </div>
-                    <div>
-                      <span className="font-semibold block text-foreground">{selectedModel || 'Select a model'}</span>
-                      <span className="text-xs text-muted-foreground">Ready to assist you</span>
-                    </div>
-                  </div>
-                  <div className={`transition-transform duration-200 ${isModelMenuOpen ? 'rotate-180' : ''}`}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M2.5 4.5L6 8L9.5 4.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </div>
-                </button>
-
-                {isModelMenuOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-2 bg-popover border rounded-xl shadow-xl overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-200">
-                    {models.map(model => (
-                      <button
-                        key={model.name}
-                        className={`w-full p-3 text-left hover:bg-accent flex items-center gap-3 transition-colors ${selectedModel === model.name ? 'bg-accent/50' : ''}`}
-                        onClick={() => {
-                          setSelectedModel(model.name);
-                          setIsModelMenuOpen(false);
-                        }}
-                      >
-                         <div className="p-2 rounded-lg bg-secondary text-secondary-foreground">
-                            <Bot size={20} />
-                         </div>
-                         <div>
-                            <span className="font-medium block text-foreground">{model.name}</span>
-                            <span className="text-xs text-muted-foreground">{model.details?.family || 'AI Model'}</span>
-                         </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <select 
+                className={styles.select}
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+              >
+                {models.map(model => (
+                  <option key={model.name} value={model.name}>
+                    {model.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         ) : (
@@ -276,9 +249,20 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
                   {msg.role === 'assistant' ? <Bot size={20} /> : <User size={20} />}
                 </div>
                 <div className={styles.messageContent}>
-                  <p className={styles.sender}>
-                    {msg.role === 'assistant' ? 'HooshSaz AI' : 'You'}
-                  </p>
+                  <div className="flex justify-between items-start">
+                    <p className={styles.sender}>
+                      {msg.role === 'assistant' ? 'HooshSaz AI' : 'You'}
+                    </p>
+                    {msg.role === 'assistant' && (
+                      <button 
+                        onClick={() => handleCopy(msg.content, msg.id)}
+                        className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                        title="Copy response"
+                      >
+                        {copiedId === msg.id ? <Check size={14} /> : <Copy size={14} />}
+                      </button>
+                    )}
+                  </div>
                   <div className={`${styles.bubble} ${styles.markdown}`}>
                     <ReactMarkdown remarkPlugins={[remarkGfm]}>
                       {msg.content}
