@@ -133,23 +133,29 @@ export const ChatWindow = ({ chatId, onChatCreated }: ChatWindowProps) => {
               } else if (data.type === 'chunk') {
                 assistantMessage += data.content;
                 
-                setMessages(prev => {
-                  const newMessages = [...prev];
-                  if (isFirstChunk) {
-                    newMessages.push({
+                if (isFirstChunk) {
+                  setMessages(prev => [
+                    ...prev,
+                    {
                       id: 'assistant-' + Date.now(),
                       role: 'assistant',
                       content: assistantMessage
-                    });
-                    isFirstChunk = false;
-                  } else {
-                    const lastMsg = newMessages[newMessages.length - 1];
-                    if (lastMsg.role === 'assistant') {
-                      lastMsg.content = assistantMessage;
                     }
-                  }
-                  return newMessages;
-                });
+                  ]);
+                  isFirstChunk = false;
+                } else {
+                  setMessages(prev => {
+                    const newMessages = [...prev];
+                    const lastIndex = newMessages.length - 1;
+                    if (lastIndex >= 0) {
+                      newMessages[lastIndex] = {
+                        ...newMessages[lastIndex],
+                        content: assistantMessage
+                      };
+                    }
+                    return newMessages;
+                  });
+                }
               }
             } catch (e) {
               console.error('Error parsing stream data:', e);
