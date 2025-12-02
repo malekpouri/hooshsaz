@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
+    "seed": "node -r dotenv/config prisma/seed.js",
     "test": "jest"
   },
   "keywords": [],
